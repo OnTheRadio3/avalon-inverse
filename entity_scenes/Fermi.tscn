@@ -1,0 +1,29 @@
+[gd_scene load_steps=6 format=3 uid="uid://w84jf6h8atck"]
+
+[ext_resource type="PackedScene" uid="uid://bu8kgsbu761pb" path="res://gltf/fermi.glb" id="1_x5guc"]
+[ext_resource type="Script" uid="uid://cgec2bnctup3h" path="res://scripts/entities/fermi.gd" id="2_cq3n5"]
+[ext_resource type="Script" uid="uid://yed1isvfqgwe" path="res://scripts/fermi_input_handler.gd" id="3_hu4y7"]
+[ext_resource type="Script" uid="uid://c87bmyd2o5erl" path="res://scripts/entities/fermi_camera.gd" id="4_lbat7"]
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_cq3n5"]
+radius = 0.876955
+height = 2.10993
+
+[node name="fermi" instance=ExtResource("1_x5guc")]
+script = ExtResource("2_cq3n5")
+m_acceleration = 36.0
+m_max_speed = 8.0
+m_damping = 0.01
+m_max_jump_height = 14.0
+
+[node name="InputHandler" type="Node" parent="." index="0"]
+script = ExtResource("3_hu4y7")
+
+[node name="TerrainCollider" type="CollisionShape3D" parent="." index="3"]
+transform = Transform3D(1.91069e-15, 4.37114e-08, -1, 1, -4.37114e-08, 0, -4.37114e-08, -1, -4.37114e-08, 0, 0.842676, 0)
+shape = SubResource("CapsuleShape3D_cq3n5")
+
+[node name="Camera3D" type="Camera3D" parent="." index="4"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.8, 5)
+script = ExtResource("4_lbat7")
+camera_rotation_offset = Vector3(-10, 0, 0)
