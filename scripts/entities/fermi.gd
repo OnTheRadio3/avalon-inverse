@@ -63,6 +63,8 @@ func _physics_process(delta: float) -> void:
 	if m_state:
 		m_state._process_state(delta)
 	
+	print(input.get_state_vector())
+	
 	var movement_vector := camera.basis * input.get_movement_vector()
 	
 	collide_and_slide( (m_x_speed * -basis.z + (m_y_speed + -9.8) * Vector3.UP) * delta)
