@@ -18,6 +18,14 @@ m_damping = 0.01
 [node name="InputHandler" type="Node" parent="." index="0"]
 script = ExtResource("3_hu4y7")
 
+[node name="Skeleton3D" parent="Armature" index="0"]
+bones/3/rotation = Quaternion(0.129801, 0.00349571, 0.0504302, 0.990251)
+bones/4/rotation = Quaternion(0.00781335, 0.0401065, 0.190494, 0.980838)
+bones/5/rotation = Quaternion(-0.343901, -0.0206298, 0.146727, 0.927242)
+bones/8/position = Vector3(-0.0795086, 0.345154, 0.135389)
+bones/8/rotation = Quaternion(0.952749, -0.108144, 0.283606, 0.0119278)
+bones/10/rotation = Quaternion(0.921456, 0.217627, -0.319302, -0.0400487)
+
 [node name="TerrainCollider" type="CollisionShape3D" parent="." index="3"]
 transform = Transform3D(1.91069e-15, 4.37114e-08, -1, 1, -4.37114e-08, 0, -4.37114e-08, -1, -4.37114e-08, 0, 0.842676, 0)
 shape = SubResource("CapsuleShape3D_cq3n5")
