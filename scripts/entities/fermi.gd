@@ -12,8 +12,7 @@ var m_state:FermiState = m_states.walk:
 			m_state._exit_state()
 		m_state = value
 
-var m_x_speed:float = 0.0
-var m_y_speed:float = 0.0
+var m_speed := Vector3.ZERO
 
 var m_on_floor:bool = false
 
@@ -67,4 +66,4 @@ func _physics_process(delta: float) -> void:
 	
 	var movement_vector := camera.basis * input.get_movement_vector()
 	
-	collide_and_slide( (m_x_speed * -basis.z + (m_y_speed + -9.8) * Vector3.UP) * delta)
+	collide_and_slide(basis * m_speed * delta)

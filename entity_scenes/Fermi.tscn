@@ -14,7 +14,6 @@ script = ExtResource("2_cq3n5")
 m_acceleration = 36.0
 m_max_speed = 8.0
 m_damping = 0.01
-m_max_jump_height = 14.0
 
 [node name="InputHandler" type="Node" parent="." index="0"]
 script = ExtResource("3_hu4y7")
