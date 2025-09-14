@@ -9,16 +9,17 @@ func _process_state(delta:float) -> void:
 		p_parent.m_on_floor = false
 		jump_entered = false 
 	
-	p_parent.m_speed.y -= 5 * delta
+	p_parent.m_speed.y -= 9.81 * 2 * delta
 	
 	var movement_vector = p_parent.camera.get_cam_local() * p_parent.input.get_movement_vector()
 	
-	p_parent.m_speed.z = -3 * movement_vector.dot(-p_parent.basis.z)
-	p_parent.m_speed.x = -1 * movement_vector.dot(-p_parent.basis.x)
+	
+	p_parent.m_speed.z -= 8 * movement_vector.dot(-p_parent.basis.z) * delta
+	p_parent.m_speed.x -= 8 * movement_vector.dot(-p_parent.basis.x) * delta
 	
 	if p_parent.m_on_floor:
 		p_parent.m_state = p_parent.m_states.idle
 	
 func _exit_state() -> void:
-	p_parent.m_speed.y = 0
+	p_parent.m_speed = Vector3.ZERO
 	jump_entered = true

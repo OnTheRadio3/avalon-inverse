@@ -1,9 +1,10 @@
 class_name Fermi
 extends CharacterBody3D
 
-var m_states:Dictionary[String, FermiState] = {
+@export var m_states:Dictionary[String, FermiState] = {
 	idle = FermiIdle.new(self),
 	walk = FermiWalk.new(self),
+	run = FermiRun.new(self),
 	jump = FermiJump.new(self)
 }
 var m_state:FermiState = m_states.walk:
@@ -18,12 +19,25 @@ var m_on_floor:bool = false
 
 @onready var input:InputHandler = $InputHandler
 @onready var camera:Camera3D = $Camera3D
+@onready var animTree := $AnimationTree
 
-@export var m_acceleration := 12.0
+@export_category("Walk Parameters")
+@export var m_acceleration := 4.0
 @export var m_max_speed := 5.0
 @export var m_damping := 6.0
+
+@export_category("Run Parameters")
+@export var m_acceleration_run := 12.0
+@export var m_max_speed_run := 10.0
+@export var m_damping_run := 6.0
+
+@export_category("")
 @export var m_max_jump_height := 5.0
 @export var m_turn_speed:float = 6.0
+
+
+func set_state(state:StringName) -> void:
+	m_state = m_states[state]
 
 func collide_and_slide(vel:Vector3) -> void:
 	var collision_result = move_and_collide(vel)
@@ -53,6 +67,34 @@ func check_floor() -> bool:
 func turn(angle:float) -> void:
 	rotate_y(angle)
 
+func rotate_from_input(delta:float) -> void:
+	var movement_input = input.get_movement_vector().normalized()
+	var local_to_cam:Basis = camera.get_cam_local()
+	
+	if movement_input != Vector3.ZERO:
+		var angle:float = basis.z.signed_angle_to(local_to_cam * -movement_input, basis.y)
+		turn(angle * delta * m_turn_speed)
+
+func walk_from_input(delta:float) -> void:
+	var movement_input := input.get_movement_vector().normalized()
+	
+	if movement_input != Vector3.ZERO:
+		m_speed.z -= (m_acceleration - m_speed.z * m_damping) * delta
+	else:
+		m_speed.z += (m_acceleration - m_speed.z * m_damping) * delta
+	
+	m_speed.z = clampf(m_speed.z, -m_max_speed, 0)
+
+func run_from_input(delta:float) -> void:
+	var movement_input := input.get_movement_vector().normalized()
+	
+	if movement_input != Vector3.ZERO:
+		m_speed.z -= (m_acceleration_run - m_speed.z * m_damping_run) * delta
+	else:
+		m_speed.z += (m_acceleration_run - m_speed.z * m_damping_run) * delta
+	
+	m_speed.z = clampf(m_speed.z, -m_max_speed_run, 0)
+
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	pass # Replace with function body.
@@ -62,7 +104,14 @@ func _physics_process(delta: float) -> void:
 	if m_state:
 		m_state._process_state(delta)
 	
-	print(input.get_state_vector())
+	#print(input.get_state_vector())
+	
+	#region Debug positional constraints
+	
+	if transform.origin.y < -50:
+		transform.origin = Vector3.ZERO
+	
+	#endregion
 	
 	var movement_vector := camera.basis * input.get_movement_vector()
 	

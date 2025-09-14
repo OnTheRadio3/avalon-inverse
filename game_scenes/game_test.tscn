@@ -24,6 +24,9 @@ skeleton = NodePath("../CollisionShape3D")
 
 [node name="fermi" parent="." instance=ExtResource("1_wym4s")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.855297, 0)
+m_acceleration_run = 12.0
+m_max_speed_run = 10.0
+m_turn_speed = 6.0
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, -0.388529, 0.921436, 0, -0.921436, -0.388529, 0, 5.51764, 0)

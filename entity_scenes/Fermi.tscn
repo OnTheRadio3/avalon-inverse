@@ -1,4 +1,4 @@
-[gd_scene load_steps=12 format=3 uid="uid://w84jf6h8atck"]
+[gd_scene load_steps=10 format=3 uid="uid://w84jf6h8atck"]
 
 [ext_resource type="PackedScene" uid="uid://bu8kgsbu761pb" path="res://gltf/fermi.glb" id="1_x5guc"]
 [ext_resource type="Script" uid="uid://cgec2bnctup3h" path="res://scripts/entities/fermi.gd" id="2_cq3n5"]
@@ -9,43 +9,68 @@
 radius = 0.876955
 height = 2.10993
 
-[sub_resource type="AnimationNodeAdd2" id="AnimationNodeAdd2_lbat7"]
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_lbat7"]
+animation = &"Walk"
 
 [sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_l5twp"]
-animation = &"Scale"
+animation = &"Idle"
 
 [sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_u3b0n"]
 animation = &"Head Turn"
 
-[sub_resource type="AnimationNodeBlendTree" id="AnimationNodeBlendTree_vvpj3"]
-graph_offset = Vector2(-341.029, 101.42)
-nodes/Add2/node = SubResource("AnimationNodeAdd2_lbat7")
-nodes/Add2/position = Vector2(100, 80)
-nodes/Animation/node = SubResource("AnimationNodeAnimation_u3b0n")
-nodes/Animation/position = Vector2(-120, 120)
-"nodes/Animation 2/node" = SubResource("AnimationNodeAnimation_l5twp")
-"nodes/Animation 2/position" = Vector2(-120, 380)
-nodes/output/position = Vector2(340, 100)
-node_connections = [&"Add2", 0, &"Animation", &"Add2", 1, &"Animation 2", &"output", 0, &"Add2"]
-
-[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_lbat7"]
-advance_mode = 2
-
-[sub_resource type="AnimationNodeStateMachine" id="AnimationNodeStateMachine_ft4av"]
-states/BlendTree/node = SubResource("AnimationNodeBlendTree_vvpj3")
-states/BlendTree/position = Vector2(406, 120)
-states/End/position = Vector2(752, 120)
-states/Start/position = Vector2(168, 120)
-transitions = ["Start", "BlendTree", SubResource("AnimationNodeStateMachineTransition_lbat7")]
+[sub_resource type="AnimationNodeBlendSpace1D" id="AnimationNodeBlendSpace1D_l5twp"]
+blend_point_0/node = SubResource("AnimationNodeAnimation_lbat7")
+blend_point_0/pos = 0.0
+blend_point_1/node = SubResource("AnimationNodeAnimation_l5twp")
+blend_point_1/pos = 0.4
+blend_point_2/node = SubResource("AnimationNodeAnimation_u3b0n")
+blend_point_2/pos = -0.5
+sync = true
 
 [node name="fermi" instance=ExtResource("1_x5guc")]
 script = ExtResource("2_cq3n5")
-m_acceleration = 36.0
-m_max_speed = 8.0
-m_damping = 0.01
+m_acceleration = 6.0
+m_max_speed = 4.0
+m_damping = 0.02
+m_acceleration_run = 2.5
+m_max_speed_run = 6.0
+m_damping_run = 12.0
+m_max_jump_height = 8.0
 
 [node name="InputHandler" type="Node" parent="." index="0"]
 script = ExtResource("3_hu4y7")
+
+[node name="Skeleton3D" parent="Armature" index="0"]
+bones/3/rotation = Quaternion(0.129967, 1.04394e-05, 0.000150608, 0.991518)
+bones/4/rotation = Quaternion(0.00796574, 0.000120492, 0.000572297, 0.999968)
+bones/5/rotation = Quaternion(-0.34774, -6.18098e-05, 0.000439616, 0.937591)
+bones/8/position = Vector3(-0.0893899, 0.348613, 0.102743)
+bones/8/rotation = Quaternion(0.921573, -0.217305, 0.319203, -0.0398942)
+bones/10/rotation = Quaternion(0.921456, 0.217627, -0.319302, -0.0400487)
+bones/12/position = Vector3(-0.218409, 0.566425, -0.175496)
+bones/12/rotation = Quaternion(-0.433593, -0.173866, 0.100054, 0.878497)
+bones/13/rotation = Quaternion(-0.0459693, -0.0207982, 0.00706586, 0.998701)
+bones/14/rotation = Quaternion(-0.0193611, -4.80328e-08, -0.0404962, 0.998992)
+bones/15/rotation = Quaternion(0.236733, 0.00637587, -0.0458761, 0.97047)
+bones/16/rotation = Quaternion(-0.222215, 0.00418865, 0.0873088, 0.971072)
+bones/17/position = Vector3(0.218409, 0.56648, -0.176386)
+bones/17/rotation = Quaternion(-0.810399, 0.101922, -0.172777, 0.550466)
+bones/18/rotation = Quaternion(-0.0806928, 0.0202692, -0.0227975, 0.996272)
+bones/19/rotation = Quaternion(-0.0225292, 0.000157842, 0.0389813, 0.998986)
+bones/20/rotation = Quaternion(0.462374, -0.0132896, 0.160589, 0.87192)
+bones/21/rotation = Quaternion(-0.22252, -0.00419457, -0.0874563, 0.970988)
+bones/22/position = Vector3(-0.216789, 0.160343, -0.132501)
+bones/22/rotation = Quaternion(-0.815798, 0.00737255, 0.0576685, 0.575407)
+bones/23/rotation = Quaternion(-0.123336, 0.00646803, -0.0398102, 0.991545)
+bones/24/rotation = Quaternion(0.136751, -0.00384604, -0.000342531, 0.990598)
+bones/25/rotation = Quaternion(0.235025, 7.41665e-05, -0.0210986, 0.97176)
+bones/26/rotation = Quaternion(0.309225, -0.000171528, -0.0279141, 0.950579)
+bones/27/position = Vector3(0.216803, 0.160395, -0.073261)
+bones/27/rotation = Quaternion(-0.600232, 0.010734, -0.0571303, 0.797711)
+bones/28/rotation = Quaternion(-0.12231, -0.00640732, 0.0398774, 0.99167)
+bones/29/rotation = Quaternion(0.134868, 0.00378419, 0.000221986, 0.990856)
+bones/30/rotation = Quaternion(0.237866, 5.61436e-07, 0.0212733, 0.971065)
+bones/31/rotation = Quaternion(-0.0114287, -0.000188139, -0.00113348, 0.999934)
 
 [node name="TerrainCollider" type="CollisionShape3D" parent="." index="3"]
 transform = Transform3D(1.91069e-15, 4.37114e-08, -1, 1, -4.37114e-08, 0, -4.37114e-08, -1, -4.37114e-08, 0, 0.842676, 0)
@@ -57,6 +82,6 @@ script = ExtResource("4_lbat7")
 camera_rotation_offset = Vector3(-10, 0, 0)
 
 [node name="AnimationTree" type="AnimationTree" parent="." index="5"]
-tree_root = SubResource("AnimationNodeStateMachine_ft4av")
+tree_root = SubResource("AnimationNodeBlendSpace1D_l5twp")
 anim_player = NodePath("../AnimationPlayer")
-parameters/BlendTree/Add2/add_amount = 1.0
+parameters/blend_position = -0.00149256

@@ -1,5 +1,5 @@
 class_name FermiState
-extends RefCounted
+extends Resource
 
 var p_parent:Fermi
 
