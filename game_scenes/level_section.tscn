@@ -1,0 +1,18 @@
+[gd_scene load_steps=3 format=3 uid="uid://dd2j7th2ws81j"]
+
+[ext_resource type="Script" uid="uid://dymm55o4gy2y7" path="res://scripts/level_section.gd" id="1_m5q2g"]
+
+[sub_resource type="Curve3D" id="Curve3D_m5q2g"]
+resource_local_to_scene = true
+
+[node name="Level Section" type="Node3D"]
+script = ExtResource("1_m5q2g")
+
+[node name="BoundingBox" type="Area3D" parent="."]
+collision_layer = 0
+collision_mask = 4
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="BoundingBox"]
+
+[node name="Progress Spline" type="Path3D" parent="."]
+curve = SubResource("Curve3D_m5q2g")

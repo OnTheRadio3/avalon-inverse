@@ -10,7 +10,7 @@ func _process_state(delta:float) -> void:
 	#var animRoot = p_parent.animTree["parameters/playback"]
 	
 	
-	print(p_parent.m_speed.z <= -p_parent.m_max_speed)
+	#print(p_parent.m_speed.z <= -p_parent.m_max_speed)
 	if p_parent.m_speed.z <= -p_parent.m_max_speed:
 		p_parent.set_state("run")
 	

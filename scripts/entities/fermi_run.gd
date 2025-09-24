@@ -6,8 +6,9 @@ func _exit_state() -> void:
 	pass
 
 func _process_state(delta:float) -> void:
-	p_parent.rotate_from_input(delta)
 	p_parent.run_from_input(delta)
+	p_parent.rotate_from_input(delta)
+	
 	
 	if p_parent.input.is_jumping():
 		p_parent.set_state("jump")
