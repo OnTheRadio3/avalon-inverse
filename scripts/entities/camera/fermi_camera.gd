@@ -1,7 +1,7 @@
 extends Camera3D
 
-var local_offset := Vector3(0.0, 2.2, 5.0)
-@export var camera_rotation_offset := Vector3(-5.0, 0.0, 0.0)
+@export var local_offset := Vector3(0.0, 2.5, 5.0)
+@export var cam_target_offset := Vector3(0.0, 0.0, 1.0)
 var cam_up := Vector3.UP
 
 var linear_velocity := Vector3.ZERO
@@ -9,35 +9,41 @@ var angular_velocity := Vector3.ZERO
 
 var new_basis:Basis = Basis.IDENTITY
 
-var active_state := 0
-
-const CAM_STATIC := 0
-const CAM_MOVING := 1
-const CAM_JUMPING := 2
-
-var cam_states:Array[Callable] = [set_cam_static, set_cam_moving]
-
 @onready var p := get_parent() as Fermi
 
+
+var cam_states:Dictionary[String, CamState] = {
+	IDLE = load("res://scripts/entities/camera/cam_idle.gd").new(self, get_parent()),
+	MOVING = load("res://scripts/entities/camera/cam_moving.gd").new(self, get_parent())
+}
+
+var state:CamState = cam_states.IDLE:
+	set(value):
+		state._exit_state()
+		state = value
 
 var x_prev := Vector3.ZERO
 var y_prev := Vector3.ZERO
 var m_jacobian := Basis.IDENTITY
 
 func linear_constraint() -> Vector3:
-	return p.transform.origin - transform.origin - get_distance_from_ground() * cam_up + get_cam_local() * local_offset
+	return p.transform.origin - transform.origin - get_distance_from_ground() * cam_up + basis * local_offset
+
+func linear_constraint_2() -> Vector3:
+	var distance_along_z := p.transform.origin.dot(p.basis.z) - transform.origin.dot(p.basis.z)
+	if distance_along_z > 0:
+		return p.transform.origin - transform.origin
+	else:
+		return Vector3.ZERO
 
 func get_closest_level_point() -> Transform3D:
-	var p := get_parent() as Fermi
-	
 	if p.m_level_sections[0] == null:
-		return Transform3D.IDENTITY
+		return Transform3D(Basis.IDENTITY, Vector3.UP)
 	
 	var path := p.m_level_sections[0].path as Path3D
 	
 	var path_forward := path.curve.get_closest_offset(p.transform.origin - path.transform.origin)
 	var point := path.curve.sample_baked_with_rotation(path_forward)
-	#point.origin += path.origin
 	
 	return point
 
@@ -50,41 +56,13 @@ func get_distance_from_ground() -> float:
 	return final_pos
 
 func get_cam_forward() -> Vector3:
-	var p := get_parent_node_3d() as Fermi
+	@warning_ignore("unused_variable")
 	var path := p.m_level_sections[0].path as Path3D
 	
 	return Vector3.ZERO
-	#path.curve.
 
 func set_cam_position() -> void:
 	linear_velocity = linear_constraint()
-
-func set_cam_orientation(delta:float) -> void:
-	var p = get_parent() as Fermi
-	#var orientation := get_closest_level_point().basis
-	var orientation = p.basis
-	var level_orientation := get_closest_level_point().basis
-	var angle:float = orientation.z.signed_angle_to(new_basis.z, orientation.y)
-	var lerp_speed:float = min(absf(angle), 1.0 - pow(0.5, 2.0 * delta)) * -sign(angle)
-	
-	#print(angle > absf(1.0 - pow(0.5, 2.0 * delta)))
-	
-	#\
-	#- absf(level_orientation.z.signed_angle_to(new_basis.z, level_orientation.y)) * 2
-	
-	new_basis = new_basis.rotated(orientation.y, lerp_speed)
-	
-	basis = new_basis# * Basis.from_euler(camera_rotation_offset * PI/180)
-	
-
-func set_cam_static(delta:float) -> void:
-	set_cam_moving(delta)
-
-func set_cam_moving(delta:float) -> void:
-	var parent = get_parent()
-	
-	set_cam_orientation(delta)
-	set_cam_position()
 
 ## Deprecated
 func cam_position_jumping() -> void:
@@ -124,13 +102,20 @@ func _physics_process(delta: float) -> void:
 	m_jacobian.z = Vector3(d.z / df.x, d.y / df.y, d.z / df.z)
 	
 	
-	if p.m_speed == Vector3.ZERO:
-		active_state = CAM_STATIC
-	else:
-		active_state = CAM_MOVING
+	#if p.m_state == p.m_states.idle:
+		#state = cam_states.IDLE
+	#else:
+		#state = cam_states.MOVING
+	
+	state._process_state(delta)
 	
 	transform.origin += linear_velocity
+	#new_basis = new_basis.rotated(angular_velocity.normalized(), angular_velocity.length())
+	#basis = new_basis
+	#look_at_from_position(transform.origin, p.transform.origin - 30.0 * p.basis.z\
+	#,cam_up)
 	
-	cam_states[active_state].call(delta)
+	angular_velocity -= angular_velocity * 24 * delta
+	
 	x_prev = transform.origin
 	y_prev = linear_constraint()

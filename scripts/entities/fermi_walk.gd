@@ -1,12 +1,18 @@
 class_name FermiWalk
 extends FermiState
 
+func _ready_state() -> void:
+	cam_state = "MOVING"
+
+func _exit_state() -> void:
+	p_parent.m_speed.x = 0
 
 
 func _process_state(delta:float) -> void:
 	p_parent.walk_from_input(delta)
 	p_parent.rotate_from_input(delta)
 	
+	p_parent.apply_gravity(delta)
 	#var animRoot = p_parent.animTree["parameters/playback"]
 	
 	

@@ -11,6 +11,7 @@ var m_state:FermiState = m_states.walk:
 	set(value):
 		if m_state != null:
 			m_state._exit_state()
+		$Camera3D.state = $Camera3D.cam_states[value.cam_state]
 		m_state = value
 
 var m_level_sections:Array[Node3D] = [null, null]
@@ -53,6 +54,7 @@ func collide_and_slide(vel:Vector3) -> void:
 	for i in 8:
 		if collision_result:
 			floor_collisions += 1
+			m_speed = m_speed.slide(collision_result.get_normal())
 			vel = vel.slide(collision_result.get_normal())
 			collision_result = move_and_collide(vel)
 		else:
@@ -70,6 +72,12 @@ func raycast(from:Vector3, to:Vector3) -> Dictionary:
 
 func check_floor() -> bool:
 	return !raycast(transform.origin, -0.01 * basis.y).is_empty()
+
+func apply_gravity(delta:float):
+	#if !check_floor():
+		#return
+	
+	m_speed.y -= 9.81 * delta
 
 func turn(angle:float) -> void:
 	rotate_y(angle)
@@ -132,9 +140,7 @@ func _physics_process(delta: float) -> void:
 	
 	if transform.origin.y < -50:
 		transform.origin = Vector3.ZERO
-	
+		m_speed = Vector3.ZERO
 	#endregion
-	
-	var movement_vector := camera.basis * input.get_movement_vector()
 	
 	collide_and_slide(basis * m_speed * delta)

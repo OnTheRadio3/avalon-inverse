@@ -6,6 +6,9 @@ var last_ground_position := Vector3.ZERO
 var gravity_scale:float = 2.0
 var gravity := 9.81
 
+func _ready_state() -> void:
+	cam_state = "MOVING"
+
 func _process_state(delta:float) -> void:
 	if jump_entered:
 		p_parent.m_speed.y = sqrt(2 * p_parent.m_max_jump_height * gravity * gravity_scale)
